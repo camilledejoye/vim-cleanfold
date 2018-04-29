@@ -56,7 +56,7 @@ if so it will find the corresponding text and return it, otherwise it will
 return an empty value.
 
 The handler have access to special variables defined by Vim, see
-*fold-foldtext* for more information about them.
+|fold-foldtext| for more information about them.
 
 Just as an example, lets say we want to make it clear when a Vim function is
 fold if it is private or not we could implement it like that: >
@@ -82,7 +82,7 @@ remove any markers which may appear in the fold text, using this two options:
 Vim uses the 'foldmarker' option to know what to fold, meaning it will always
 corresponds to the way you declare your folds and should not be a problem.
 The 'commentstring' option in an other hand is used by Vim to create a fold,
-see : *E350*
+see : |E350|
 
 This option is used by CleanFold to remove any markers with no text specified.
 For example, with 'commentstring' being "%s >
