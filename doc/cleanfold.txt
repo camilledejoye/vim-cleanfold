@@ -1,0 +1,167 @@
+*cleanfold.txt*	A cleaner way to see folds
+*cleanfold*
+
+
+==============================================================================
+CONTENTS                                                  *cleanfold-contents*
+
+    1.Intro.........................................|cleanfold-intro|
+    2.Overwiew......................................|cleanfold-overview|
+    3.Handlers......................................|cleanfold-handlers|
+    4.Markers.......................................|cleanfold-markers|
+    5.Global Options................................|cleanfold-global-options|
+    6.Commands......................................|cleanfold-commands|
+
+
+==============================================================================
+1. Intro                                                     *cleanfold-intro*
+
+CleanFold is a |foldtext()| function which allow to display fold texts in a
+cleaner way, at least for my taste.
+
+They where actually two things that really bother with the default
+|foldtext()|function.
+
+First, the dashes maked it difficult to read. Gaving you the filling that your
+screen is full, taking out blanks which can help your eyes to quickly find
+where something start and where something stop.
+Second, the line numbers on the left on the screen. It completly breaks the
+indentation making it, once again, difficult to read.
+As the saying goes: "A code should be read as a book"
+
+
+==============================================================================
+2. Overview                                               *cleanfold-overview*
+
+First of all, CleanFold only handle the rendering of folds. it does not
+provide any |foldexpr()|, provide a syntax foldind or change any configuraiton
+related to the creation of folds.
+
+CleanFold will use the text on the first line of a fold, except for multiline
+comments. In this case it will look for the first non empty line.
+
+
+==============================================================================
+3. Handlers                                               *cleanfold-handlers*
+
+CleanFold is build around a notion of handlers.
+Those handlers are independent of the rendering of folds, their unique
+responsibility is to treat a case of folding.
+It means that they do not allow to change the way a fold is shown but to
+change the text the fold will contain.
+
+For example, CleanFold provide a default handler for multiline comments.
+This handler will check if the current fold corresponds to a multile comment,
+if so it will find the corresponding text and return it, otherwise it will
+return an empty value.
+
+The handler have access to special variables defined by Vim, see
+*fold-foldtext* for more information about them.
+
+Just as an example, lets say we want to make it clear when a Vim function is
+fold if it is private or not we could implement it like that: >
+    function! VimFunctionFoldHandler()
+        let l:first_line = getline(v:foldstart)
+
+        if l:first_line =~ 'fu\%[nction]!\?\s\+s:'
+            return 'private ' . l:first_line
+        endif
+    endfunction
+<
+To add this handler to CleanFold, see |cleanfold-handlers|
+
+
+==============================================================================
+4. Markers                                                 *cleanfold-markers*
+
+When the 'foldmethod' option is defined to `marker`, CleanFold will try to
+remove any markers which may appear in the fold text, using this two options:
+    'foldmarker'     to retrieve the marker used to create a fold
+    'commentstring'  to know wich type of comments is used with the marker
+
+Vim uses the 'foldmarker' option to know what to fold, meaning it will always
+corresponds to the way you declare your folds and should not be a problem.
+The 'commentstring' option in an other hand is used by Vim to create a fold,
+see : *E350*
+
+This option is used by CleanFold to remove any markers with no text specified.
+For example, with 'commentstring' being "%s >
+    function! s:Foo() " Do some stuff {{{
+        fold into -> function! s:Foo() " Do somme stuff
+
+    function! s:Foo() " {{{
+        fold into -> function! s:Foo()
+<
+So if you are use to declare fold by hands, keep in mind that you must either
+use the comment declare in 'commentstring' or change its value.
+
+
+==============================================================================
+5. Global Options                                   *cleanfold-global-options*
+
+                                                        *'g:cleanfold_fillchar'*
+
+Type: char
+Default: ' '
+Defines the fillchar use by the folds.
+By defaults it's a space, you can change it by defining: >
+    let g:cleanfold_fillchar = '_'
+<
+
+                                                  *'g:cleanfold_remove_markers'*
+                                                  *'b:cleanfold_remove_markers'*
+
+Type: boolean
+Default: 1
+Defines if CleanFold should try to remove the fold markers from the fold text
+or not.
+You can defined it on a per buffer basis with: >
+    let b:cleanfold_remove_markers = 0
+>
+Note: If this option is disabled, CleanFold will not be able to handle
+multiline comments correctly, meaning that: >
+    " - {{{
+    "  Vim multiline comments
+    ""
+<Will be render as: >
+    " - {{{
+Instead of: >
+    " - Vim multiline comments
+<
+
+                                                        *'g:cleanfold_handlers'*
+
+Type: list
+Default: ['s:MultilineCommentFoldHandler']
+Defines the handlers used by CleanFold to retrieve the fold text.
+CleanFold uses the principe of `Chain of Reponsability`, so the handlers will
+be called in the order the same order they have in the list and the chain will
+stop on the first handler returning a non empty result.
+
+To add your own handlers it is recommended to use |list-functions| in order to
+not remove any handler by accident, use |after-directory| to do so.
+If you want to do it in your `vimrc` file, make sure to include the default(s)
+handler(s) if you want to use them. And keep in mind that you might have
+deleted handlers from other plugins.
+
+For example, to add the handler of the |cleanfold-handlers|section to your
+vimrc: >
+    let g:cleanfold_handlers = [
+        \ 's:MultilineCommentFoldHandler',
+        \ 'VimFunctionFoldHandler'
+    \]
+<
+
+==============================================================================
+6. Commands                                               *cleanfold-commands*
+
+`:ChangeFoldFillChar`                                      *:ChangeFoldFillChar*
+
+If you want to manually change the fold fillchar, you can use this command to
+do it simply, there is no need for quotes: >
+    :ChangeFoldFillChar _
+<
+If you want to define a space, escape it with a backslash: >
+    :ChangeFoldFillChar \ 
+
+ vim:tw=78:sw=4:ft=help:norl:
