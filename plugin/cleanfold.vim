@@ -34,7 +34,8 @@ function! MyFoldText() " {{{
     let l:foldtext              = s:GetFoldedText() . ' '
 
     if l:space_available < strwidth(l:foldtext)
-      let l:foldtext = strpart(l:foldtext, 0, l:space_available) " Shrink to fit in the window
+      " Shrink to fit in the window
+      let l:foldtext = substitute(strpart(l:foldtext, 0, l:space_available), '\w\+$', '...', '')
     endif
 
     let l:space_available -= strwidth(l:foldtext)
