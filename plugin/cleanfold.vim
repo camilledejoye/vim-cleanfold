@@ -15,7 +15,7 @@ if !exists('g:cleanfold_remove_markers')
 endif
 
 if !exists('g:cleanfold_fillchar')
-  let g:cleanfold_fillchar = get(g:, 'cleanfold_fillchar', ' ')
+  let g:cleanfold_fillchar = get(g:, 'cleanfold_fillchar', '\ ')
 endif
 
 if !exists('g:cleanfold_handlers')
@@ -188,7 +188,11 @@ endfunction " }}}
 function! s:ChangeFillChar(char) " {{{
   let l:old_fillchar = s:GetFillChar()
 
-  let &fillchars = substitute(&fillchars, 'fold:\zs.', a:char, '')
+  if empty(l:old_fillchar)
+    execute 'set fillchars^=fold:' . a:char
+  else
+    let &fillchars = substitute(&fillchars, 'fold:\zs.', a:char, '')
+  endif
 
   return l:old_fillchar
 endfunction " }}}
