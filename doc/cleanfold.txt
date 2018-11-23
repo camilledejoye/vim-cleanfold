@@ -68,7 +68,7 @@ fold if it is private or not we could implement it like that: >
         endif
     endfunction
 <
-To add this handler to CleanFold, see |cleanfold-handlers|
+To add this handler to CleanFold, see |g:cleanfold_handlers|
 
 
 ==============================================================================
@@ -106,6 +106,9 @@ Default: ' '
 Defines the fillchar use by the folds.
 By defaults it's a space, you can change it by defining: >
     let g:cleanfold_fillchar = '_'
+
+To declare a space, you must escape it with a backslash: >
+    let g:cleanfold_fillchar = '\ '
 <
 
                                                   *'g:cleanfold_remove_markers'*
@@ -135,16 +138,16 @@ Type: list
 Default: ['s:MultilineCommentFoldHandler']
 Defines the handlers used by CleanFold to retrieve the fold text.
 CleanFold uses the principe of `Chain of Reponsability`, so the handlers will
-be called in the order the same order they have in the list and the chain will
+be called in the same order they have in the list and the chain will
 stop on the first handler returning a non empty result.
 
 To add your own handlers it is recommended to use |list-functions| in order to
 not remove any handler by accident, use |after-directory| to do so.
 If you want to do it in your `vimrc` file, make sure to include the default(s)
-handler(s) if you want to use them. And keep in mind that you might have
+handler(s) if you want to use it/them. And keep in mind that you might have
 deleted handlers from other plugins.
 
-For example, to add the handler of the |cleanfold-handlers|section to your
+For example, to add the handler of the |cleanfold-handlers| section to your
 vimrc: >
     let g:cleanfold_handlers = [
         \ 's:MultilineCommentFoldHandler',
