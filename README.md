@@ -28,12 +28,12 @@ For more detail information, just try it and read the doc. I promise it's more e
 I recommend to use [k-takata/minpac](https://github.com/k-takata/minpac), it allows you to manage
 your plugins with ease and work on Vim8 and NeoVim.
 ```vim
-minpac#add('elythyr/vim-cleanfold')
+minpac#add('camilledejoye/vim-cleanfold')
 ```
 
 Otherwise you know the drill :)
 
 For instance with [Pathogen](https://github.com/tpope/vim-pathogen)
 ```
-git clone https://github.com/elythyr/vim-cleanfold.git ~/.vim/bundle/vim-cleanfold
+git clone https://github.com/camilledejoye/vim-cleanfold.git ~/.vim/bundle/vim-cleanfold
 ```
